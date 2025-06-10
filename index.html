@@ -1,26 +1,50 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Penilaian Kualitas Tanah dengan Fuzzy Logic</title>
-<link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Identifikasi Jenis Tanaman - Fuzzy Logic</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <h1>Penilaian Kualitas Tanah dengan Fuzzy Logic</h1>
-    <form id="soilForm">
-      <label for="ph">pH Tanah (4 - 9):</label>
-      <input type="number" id="ph" name="ph" min="4" max="9" step="0.1" required />
+    <h1>Identifikasi Jenis Tanaman</h1>
+    <form id="plantForm">
+      <label for="tekstur">Tekstur (mm):</label>
+      <input
+        type="number"
+        id="tekstur"
+        name="tekstur"
+        min="0.02"
+        max="2.0"
+        step="0.01"
+        placeholder="0.02 - 2.0"
+        required
+      />
 
-      <label for="nitrogen">Kadar Nitrogen (N) mg/kg (0 - 50):</label>
-      <input type="number" id="nitrogen" name="nitrogen" min="0" max="50" required />
+      <label for="kelembapan">Kelembapan (%):</label>
+      <input
+        type="number"
+        id="kelembapan"
+        name="kelembapan"
+        min="40"
+        max="80"
+        step="1"
+        placeholder="40 - 80"
+        required
+      />
 
-      <label for="phosphor">Kadar Fosfor (P) mg/kg (0 - 50):</label>
-      <input type="number" id="phosphor" name="phosphor" min="0" max="50" required />
-
-      <label for="potassium">Kadar Kalium (K) mg/kg (0 - 50):</label>
-      <input type="number" id="potassium" name="potassium" min="0" max="50" required />
+      <label for="ph">pH Tanah:</label>
+      <input
+        type="number"
+        id="ph"
+        name="ph"
+        min="5.6"
+        max="7.5"
+        step="0.1"
+        placeholder="5.6 - 7.5"
+        required
+      />
 
       <button type="submit">Analisis</button>
     </form>
