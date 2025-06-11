@@ -5,65 +5,68 @@ document.getElementById('plantForm').addEventListener('submit', function (e) {
   const kelembapan = parseFloat(document.getElementById('kelembapan').value);
   const ph = parseFloat(document.getElementById('ph').value);
 
-  const result = getJenisTanaman(tekstur, kelembapan, ph);
+  if (
+    isNaN(tekstur) || isNaN(kelembapan) || isNaN(ph) ||
+    tekstur < 0.002 || tekstur > 0.2
+  ) {
+    document.getElementById('result').innerHTML = `<p style="color:red;">Input tidak valid. Tekstur tanah harus antara 0.002 - 0.2 mm.</p>`;
+    return;
+  }
+
+  document.getElementById('result').innerHTML = "";
+
+  const kesuburan = getKesuburan(ph, kelembapan);
+  const rekomendasi = getRekomendasiTanaman(ph, tekstur);
 
   document.getElementById('result').innerHTML = `
-    <h3>Hasil Identifikasi</h3>
-    <p><strong>Jenis Tanaman yang Cocok:</strong> ${result}</p>
+    <h3>Hasil Analisis</h3>
+    <p><strong>Tingkat Kesuburan:</strong> ${kesuburan}</p>
+    <p><strong>Rekomendasi Tanaman:</strong> ${rekomendasi}</p>
   `;
 });
 
-function getJenisTanaman(tekstur, kelembapan, ph) {
-  const rules = [
-    {
-      tanaman: "Cabai",
-      tekstur: [0.02, 0.1],
-      kelembapan: [71, 80],
-      ph: [6.6, 7.5]
-    },
-    {
-      tanaman: "Jagung",
-      tekstur: [0.2, 2.0],
-      kelembapan: [40, 60],
-      ph: [5.6, 6.5]
-    },
-    {
-      tanaman: "Padi",
-      tekstur: [0.2, 2.0],
-      kelembapan: [61, 70],
-      ph: [5.6, 6.5]
-    },
-    {
-      tanaman: "Kacang Tanah",
-      tekstur: [0.02, 0.1],
-      kelembapan: [71, 80],
-      ph: [6.6, 7.5]
-    },
-    {
-      tanaman: "Kedelai",
-      tekstur: [0.2, 2.0],
-      kelembapan: [61, 70],
-      ph: [5.6, 6.5]
-    },
-    {
-      tanaman: "Semangka",
-      tekstur: [0.2, 2.0],
-      kelembapan: [61, 70],
-      ph: [5.6, 6.5]
-    }
-  ];
+function getKesuburan(ph, kelembapan) {
+  if (ph <= 5.5 && kelembapan <= 60) return "Buruk";
+  if (ph <= 5.5 && kelembapan > 60 && kelembapan <= 70) return "Sedang";
+  if (ph <= 5.5 && kelembapan > 70) return "Buruk";
 
-  // Cari semua tanaman yang cocok
-  const cocok = rules.filter(rule =>
-    tekstur >= rule.tekstur[0] && tekstur <= rule.tekstur[1] &&
-    kelembapan >= rule.kelembapan[0] && kelembapan <= rule.kelembapan[1] &&
-    ph >= rule.ph[0] && ph <= rule.ph[1]
-  );
+  if (ph > 5.0 && ph <= 7.5 && kelembapan <= 60) return "Sedang";
+  if (ph > 5.0 && ph <= 7.5 && kelembapan > 60 && kelembapan <= 70) return "Baik";
+  if (ph > 5.0 && ph <= 7.5 && kelembapan > 70) return "Sedang";
 
-  if (cocok.length === 0) {
-    return "Tidak ditemukan tanaman yang cocok berdasarkan parameter tersebut.";
+  if (ph > 7 && kelembapan <= 60) return "Buruk";
+  if (ph > 7 && kelembapan > 60 && kelembapan <= 70) return "Sedang";
+  if (ph > 7 && kelembapan > 70) return "Buruk";
+
+  return "Tidak terdefinisi";
+}
+
+function getRekomendasiTanaman(ph, tekstur) {
+  const hasil = [];
+
+  if (ph <= 5.5 && tekstur >= 0.002 && tekstur <= 0.02) {
+    hasil.push("Singkong");
   }
 
-  // Kembalikan semua tanaman yang cocok (jika lebih dari satu)
-  return cocok.map(r => r.tanaman).join(", ");
+  if (ph > 5.0 && ph <= 7.5 && tekstur >= 0.02 && tekstur <= 0.2) {
+    hasil.push("Jagung", "Kentang", "Kacang-kacangan", "Bawang Merah", "Pisang");
+  }
+
+  if (ph > 5.0 && ph <= 7.5 && tekstur >= 0.002 && tekstur <= 0.02) {
+    hasil.push("Padi", "Kopi", "Sorgum", "Kacang Merah");
+  }
+
+  if (ph > 7 && tekstur >= 0.002 && tekstur <= 0.02) {
+    hasil.push("Cabai", "Kacang Tanah");
+  }
+
+  if (ph > 7 && tekstur >= 0.02 && tekstur <= 0.2 && hasil.length === 0) {
+    return "Tidak ditemukan tanaman yang cocok.";
+  }
+
+  if (hasil.length === 0) {
+    return "Tidak ditemukan tanaman yang cocok.";
+  }
+
+  return hasil.join(", ");
 }
